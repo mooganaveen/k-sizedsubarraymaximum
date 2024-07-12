@@ -1,0 +1,62 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+class Solution {
+    public static int[] max_of_subarrays(int[] arr, int n, int k) {
+        // Array to store the result
+        int[] result = new int[n - k + 1];
+        
+        // Deque to store indices of array elements
+        Deque<Integer> dq = new ArrayDeque<>();
+        
+        int idx = 0; // Index for result array
+        
+        // Iterate through each element of the array
+        for (int i = 0; i < n; i++) {
+            // Remove elements from the deque which are out of the current window
+            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) {
+                dq.pollFirst();
+            }
+            
+            // Remove elements from the deque which are less than the current element
+            while (!dq.isEmpty() && arr[dq.peekLast()] < arr[i]) {
+                dq.pollLast();
+            }
+            
+            // Add current element index at the rear of the deque
+            dq.offerLast(i);
+            
+            // Start adding maximums to result once we have covered first window
+            if (i >= k - 1) {
+                result[idx++] = arr[dq.peekFirst()];
+            }
+        }
+        
+        return result;
+    }
+    
+    public static void main(String[] args) {
+        // Example usage:
+        int[] arr1 = {1, 2, 3, 1, 4, 5, 2, 3, 6};
+        int k1 = 3;
+        int n1 = arr1.length;
+        
+        int[] result1 = max_of_subarrays(arr1, n1, k1);
+        System.out.print("Output for arr1: ");
+        for (int num : result1) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+        
+        int[] arr2 = {8, 5, 10, 7, 9, 4, 15, 12, 90, 13};
+        int k2 = 4;
+        int n2 = arr2.length;
+        
+        int[] result2 = max_of_subarrays(arr2, n2, k2);
+        System.out.print("Output for arr2: ");
+        for (int num : result2) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+}
